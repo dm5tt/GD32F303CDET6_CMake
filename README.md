@@ -1,12 +1,14 @@
-Template GD32F303CG / SPL project
+This is a friendly fork from https://github.com/djix123/GD32F303CG_CMake
 
-Board based on the ```WeAct Studio BluePill-Plus GD32F303CC``` development board.
+# What is this thing?
 
-This project uses a GD32F303CG MCU rather than a GD32F303CC since some of the original boards had processors with [non-working FPUs](https://github.com/WeActTC/BluePill-Plus/issues/4).
-These were manually repaired with a [GD32F303CG](https://lcsc.com/product-detail/Microcontroller-Units-MCUs-MPUs-SOCs_GigaDevice-Semicon-Beijing-GD32F303CGT6_C2835084.html) part.
+This a is a cmake'ized template for writing application on the GD32F303CDET6. It contains the Standard Peripheral Library + USBD Lib (untested) and maybe FreeRTOS in the future.
 
-Example usage:
+# How to build?
 
-i.  Create build system: ```cmake -DCMAKE_BUILD_TYPE=Debug -B build```
-
-ii. Build firmware: ```cmake --build build --target all```
+```
+# mkdir build
+# cd build
+# cmake ..
+# make hello_world
+```
