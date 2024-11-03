@@ -53,14 +53,8 @@ include_directories(
 # Preprocessor definitions
 add_definitions(-DDEBUG -DGD32F3 -DGD32F30x -DGD32F303 -DGD32F30X_XD)
 
-# Source files
-file(GLOB_RECURSE SOURCES 
-    "Source/*.*" 
-    "Drivers/*.*"
-)
-
 # Linker options
-add_link_options(
+set(LINKER_OPTIONS
     -Wl,-gc-sections
     -Wl,--print-memory-usage
     -Wl,-Map=${PROJECT_BINARY_DIR}/${PROJECT_NAME}.map
@@ -71,16 +65,40 @@ add_link_options(
     -T ${LINKER_SCRIPT}
 )
 
-# Executable target
-add_executable(${PROJECT_NAME}.elf ${SOURCES})
+# Function to add app target
+function(add_app app_name)
+    # Set source files for the specific app
+    file(GLOB_RECURSE APP_SOURCES
+        "${CMAKE_SOURCE_DIR}/apps/${app_name}/*.*"
+        "${CMAKE_SOURCE_DIR}/Source/*.*"
+        "${CMAKE_SOURCE_DIR}/Drivers/*.*"
+    )
 
-# Output files (HEX and BIN)
-set(HEX_FILE ${PROJECT_BINARY_DIR}/${PROJECT_NAME}.hex)
-set(BIN_FILE ${PROJECT_BINARY_DIR}/${PROJECT_NAME}.bin)
+    # Define the executable target for the app without .elf suffix
+    add_executable(${app_name} ${APP_SOURCES})
 
-# Post-build commands
-add_custom_command(TARGET ${PROJECT_NAME}.elf POST_BUILD
-    COMMAND ${CMAKE_OBJCOPY} -Oihex $<TARGET_FILE:${PROJECT_NAME}.elf> ${HEX_FILE}
-    COMMAND ${CMAKE_OBJCOPY} -Obinary $<TARGET_FILE:${PROJECT_NAME}.elf> ${BIN_FILE}
-    COMMENT "Generating ${HEX_FILE} and ${BIN_FILE}"
+    # Linker options
+    target_link_options(${app_name} PRIVATE ${LINKER_OPTIONS})
+
+    # Output files (HEX and BIN)
+    set(HEX_FILE ${PROJECT_BINARY_DIR}/${app_name}.hex)
+    set(BIN_FILE ${PROJECT_BINARY_DIR}/${app_name}.bin)
+
+    # Post-build commands
+    add_custom_command(TARGET ${app_name} POST_BUILD
+        COMMAND ${CMAKE_OBJCOPY} -Oihex $<TARGET_FILE:${app_name}> ${HEX_FILE}
+        COMMAND ${CMAKE_OBJCOPY} -Obinary $<TARGET_FILE:${app_name}> ${BIN_FILE}
+        COMMENT "Generating ${HEX_FILE} and ${BIN_FILE}"
+    )
+endfunction()
+
+# List of app targets
+set(APP_LIST
+   hello_world 
+    # Add more app names here
 )
+
+# Add each app target
+foreach(app ${APP_LIST})
+    add_app(${app})
+endforeach()
