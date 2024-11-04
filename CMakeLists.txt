@@ -21,7 +21,7 @@ set(SIZE arm-none-eabi-size)
 set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 
 # Set the linker script
-set(LINKER_SCRIPT ${CMAKE_SOURCE_DIR}/GD32F303CG_DEFAULT.ld)
+set(LINKER_SCRIPT ${CMAKE_SOURCE_DIR}/GD32F30CET6.ld)
 
 # Define project options
 add_compile_options(
